@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import SearchBar from "./components/Searchbar/Searchbar";
 import TrackList from "./components/TrackList/TrackList";
+import Playlist from "./components/Playlist/Playlist";
 
 class App extends Component {
   constructor(props) {
@@ -61,15 +62,7 @@ class App extends Component {
               onClick={this.handleAddToPlayList}
             />
           </div>
-          <div className="Playlist">
-            <input value="New Playlist" />
-            <TrackList
-              tracks={this.state.newPlayList}
-              type="remove-result"
-              onClick={this.handleRemoveFromPlayList}
-            />
-            <a className="Playlist-save">SAVE TO SPOTIFY</a>
-          </div>
+          <Playlist newPlayList={this.state.newPlayList} type="remove-result" onClick={this.handleRemoveFromPlayList}/>
         </div>
       </div>
     );
