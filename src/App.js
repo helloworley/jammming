@@ -30,11 +30,22 @@ class App extends Component {
     };
 
     this.handleAddToPlayList = this.handleAddToPlayList.bind(this);
+    this.handleRemoveFromPlayList = this.handleRemoveFromPlayList.bind(this);
   }
 
   handleAddToPlayList(songObject) {
     this.setState({
       newPlayList: [...this.state.newPlayList, songObject]
+    });
+  }
+
+  handleRemoveFromPlayList(selectedTrack) {
+    const updatedPlayList = this.state.newPlayList.filter(currentTrack => {
+      return JSON.stringify(currentTrack) !== JSON.stringify(selectedTrack);
+    });
+
+    this.setState({
+      newPlayList: [...updatedPlayList]
     });
   }
 
@@ -56,7 +67,7 @@ class App extends Component {
             <TrackList
               tracks={this.state.newPlayList}
               type="remove-result"
-              onClick={this.handleAddToPlayList}
+              onClick={this.handleRemoveFromPlayList}
             />
             <a className="Playlist-save">SAVE TO SPOTIFY</a>
           </div>
