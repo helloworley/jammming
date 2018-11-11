@@ -26,11 +26,19 @@ class App extends Component {
         }
       ],
       newPlayList: [
-      ]
+      ],
+      playlistName: "New Playlist"
     };
 
+    this.handleChangePlaylistName = this.handleChangePlaylistName.bind(this);
     this.handleAddToPlayList = this.handleAddToPlayList.bind(this);
     this.handleRemoveFromPlayList = this.handleRemoveFromPlayList.bind(this);
+  }
+
+  handleChangePlaylistName(name) {
+    this.setState({
+      playlistName: name
+    });
   }
 
   handleAddToPlayList(songObject) {
@@ -55,7 +63,7 @@ class App extends Component {
         <SearchBar />
         <div className="App-playlist">
           <SearchResults tracks={this.state.searchResultTracks} onClick={this.handleAddToPlayList} />
-          <Playlist newPlayList={this.state.newPlayList} type="remove-result" onClick={this.handleRemoveFromPlayList}/>
+          <Playlist onChange={this.handleChangePlaylistName} playlistName={this.state.playlistName} newPlayList={this.state.newPlayList} type="remove-result" onClick={this.handleRemoveFromPlayList}/>
         </div>
       </div>
     );
