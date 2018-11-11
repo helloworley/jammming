@@ -2,39 +2,47 @@ import React from "react";
 import "./Track.css";
 
 class Track extends React.Component {
-  
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
+    this.addTrack = this.addTrack.bind(this);
+    this.removeTrack = this.removeTrack.bind(this);
   }
 
-  handleChange() {
-    const songInfo = {
-      title: `${this.props.title}`,
-      artist: `${this.props.artist}`,
-      album: `${this.props.album}`,
-      id: `${this.props.id}`
-    };
-    this.props.onClick(songInfo);
+  addTrack() {
+    this.props.onAdd(this.props.track);
   }
-  
-  
+
+  removeTrack() {
+    this.props.onRemove(this.props.track);
+  }
+
   render() {
-
-    const type = this.props.type;
-    let trackAction;
-    type === "search-result" ? trackAction = '+' : trackAction = '—';
-
-
-    return (
-      <div className="Track">
-        <div className="Track-information">
-          <h3>{this.props.title}</h3>
-          <p>{this.props.artist} | {this.props.album}</p>
+    const track = this.props.track;
+    if (this.props.isRemoval) {
+      return (
+        <div className="Track">
+          <div className="Track-information">
+            <h3>{track.title}</h3>
+            <p>{track.artist} | {track.album}</p>
+          </div>
+          <a className="Track-action" onClick={this.removeTrack}>
+          —
+          </a>
         </div>
-        <a className="Track-action" onClick={this.handleChange}>{trackAction}</a>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className="Track">
+          <div className="Track-information">
+            <h3>{track.title}</h3>
+            <p>{track.artist} | {track.album}</p>
+          </div>
+          <a className="Track-action" onClick={this.addTrack}>
+          +
+          </a>
+        </div>
+      );
+    }
   }
 }
 

@@ -34,8 +34,8 @@ class App extends Component {
     };
 
     this.handleChangePlaylistName = this.handleChangePlaylistName.bind(this);
-    this.handleAddToPlayList = this.handleAddToPlayList.bind(this);
-    this.handleRemoveFromPlayList = this.handleRemoveFromPlayList.bind(this);
+    this.addTrack = this.addTrack.bind(this);
+    this.removeTrack = this.removeTrack.bind(this);
   }
 
   handleChangePlaylistName(name) {
@@ -44,7 +44,7 @@ class App extends Component {
     });
   }
 
-  handleAddToPlayList(track) {
+  addTrack(track) {
     if (this.state.newPlayList.find(savedTrack => savedTrack.id === track.id)) {
       return;
     } else {
@@ -54,7 +54,7 @@ class App extends Component {
     }
   }
 
-  handleRemoveFromPlayList(selectedTrack) {
+  removeTrack(selectedTrack) {
     const updatedPlayList = this.state.newPlayList.filter(currentTrack => {
       return JSON.stringify(currentTrack) !== JSON.stringify(selectedTrack);
     });
@@ -69,8 +69,16 @@ class App extends Component {
       <div className="App">
         <SearchBar />
         <div className="App-playlist">
-          <SearchResults tracks={this.state.searchResultTracks} onClick={this.handleAddToPlayList} />
-          <Playlist onChange={this.handleChangePlaylistName} playlistName={this.state.playlistName} newPlayList={this.state.newPlayList} type="remove-result" onClick={this.handleRemoveFromPlayList}/>
+          <SearchResults 
+            tracks={this.state.searchResultTracks} 
+            onAdd={this.addTrack} 
+            isRemoval={false} />
+          <Playlist 
+            onChange={this.handleChangePlaylistName} 
+            playlistName={this.state.playlistName} 
+            newPlayList={this.state.newPlayList} 
+            isRemoval={true} 
+            onRemove={this.removeTrack}/>
         </div>
       </div>
     );
