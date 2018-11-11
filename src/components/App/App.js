@@ -3,33 +3,13 @@ import "./App.css";
 import SearchBar from "../Searchbar/Searchbar";
 import Playlist from "../Playlist/Playlist";
 import SearchResults from "../SearchResults/SearchResults";
+import Spotify from "../../util/Spotify";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       searchResults: [
-        {
-          title: "Mountaintops In Caves",
-          artist: "Talkdemonic",
-          album: "Beat Romantic",
-          uri: "uri1",
-          id: "1"
-        },
-        {
-          title: "Chihiro",
-          artist: "Yoste",
-          album: "Chihiro",
-          uri: "uri2",
-          id: "2"
-        },
-        {
-          title: "Northern Lights",
-          artist: "Lights & Motion",
-          album: "Chronicle",
-          uri: "uri3",
-          id: "3"
-        }
       ],
       newPlayList: [
       ],
@@ -38,9 +18,11 @@ class App extends Component {
 
     this.updatePlaylistName = this.updatePlaylistName.bind(this);
     this.addTrack = this.addTrack.bind(this);
+    this.updateSearchResults = this.updateSearchResults.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
     this.savePlaylist = this.savePlaylist.bind(this);
     this.search = this.search.bind(this);
+    this.checkForLoggedInUser = this.checkForLoggedInUser.bind(this);
   }
 
   updatePlaylistName(name) {
@@ -76,11 +58,26 @@ class App extends Component {
     console.log(trackURIs);
   }
 
+  updateSearchResults(term) {
+    this.setState({
+      searchResults: Spotify.search(term)
+    })
+  }
+
   search(term) {
+    Spotify.getAccessToken();
+    // this.updateSearchResults(term);
     console.log(term);
   }
 
+  checkForLoggedInUser() {
+    console.log('on render')
+    Spotify.onRender();
+  }
+
   render() {
+
+    this.checkForLoggedInUser()
 
     return (
       <div className="App">
