@@ -3,6 +3,7 @@ import "./App.css";
 import SearchBar from "./components/Searchbar/Searchbar";
 import TrackList from "./components/TrackList/TrackList";
 import Playlist from "./components/Playlist/Playlist";
+import SearchResults from "./components/SearchResults/SearchResults";
 
 class App extends Component {
   constructor(props) {
@@ -54,14 +55,7 @@ class App extends Component {
       <div className="App">
         <SearchBar />
         <div className="App-playlist">
-          <div className="SearchResults">
-            <h2>Results</h2>
-            <TrackList
-              tracks={this.state.searchResultTracks}
-              type="search-result"
-              onClick={this.handleAddToPlayList}
-            />
-          </div>
+          <SearchResults tracks={this.state.searchResultTracks} onClick={this.handleAddToPlayList} />
           <Playlist newPlayList={this.state.newPlayList} type="remove-result" onClick={this.handleRemoveFromPlayList}/>
         </div>
       </div>
