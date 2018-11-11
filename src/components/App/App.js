@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import "./App.css";
-import SearchBar from "./components/Searchbar/Searchbar";
-import TrackList from "./components/TrackList/TrackList";
-import Playlist from "./components/Playlist/Playlist";
-import SearchResults from "./components/SearchResults/SearchResults";
+import SearchBar from "../Searchbar/Searchbar";
+import Playlist from "../Playlist/Playlist";
+import SearchResults from "../SearchResults/SearchResults";
 
 class App extends Component {
   constructor(props) {
