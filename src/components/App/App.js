@@ -33,12 +33,12 @@ class App extends Component {
       playlistName: "New Playlist"
     };
 
-    this.handleChangePlaylistName = this.handleChangePlaylistName.bind(this);
+    this.updatePlaylistName = this.updatePlaylistName.bind(this);
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
   }
 
-  handleChangePlaylistName(name) {
+  updatePlaylistName(name) {
     this.setState({
       playlistName: name
     });
@@ -74,7 +74,7 @@ class App extends Component {
             onAdd={this.addTrack} 
             isRemoval={false} />
           <Playlist 
-            onChange={this.handleChangePlaylistName} 
+            onNameChange={this.updatePlaylistName} 
             playlistName={this.state.playlistName} 
             newPlayList={this.state.newPlayList} 
             isRemoval={true} 
