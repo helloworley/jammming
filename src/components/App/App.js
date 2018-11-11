@@ -8,21 +8,24 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchResultTracks: [
+      searchResults: [
         {
           title: "Mountaintops In Caves",
           artist: "Talkdemonic",
-          album: "Beat Romantic"
+          album: "Beat Romantic",
+          id: "1"
         },
         {
           title: "Chihiro",
           artist: "Yoste",
-          album: "Chihiro"
+          album: "Chihiro",
+          id: "2"
         },
         {
           title: "Northern Lights",
           artist: "Lights & Motion",
-          album: "Chronicle"
+          album: "Chronicle",
+          id: "3"
         }
       ],
       newPlayList: [
@@ -54,7 +57,7 @@ class App extends Component {
       <div className="App">
         <SearchBar />
         <div className="App-playlist">
-          <SearchResults tracks={this.state.searchResultTracks} onClick={this.handleAddToPlayList} />
+          <SearchResults searchResults={this.state.searchResults} onClick={this.handleAddToPlayList} />
           <Playlist newPlayList={this.state.newPlayList} type="remove-result" onClick={this.handleRemoveFromPlayList}/>
         </div>
       </div>
