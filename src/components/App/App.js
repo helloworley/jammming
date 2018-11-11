@@ -70,7 +70,7 @@ class App extends Component {
         <SearchBar />
         <div className="App-playlist">
           <SearchResults 
-            tracks={this.state.searchResultTracks} 
+            searchResults={this.state.searchResults} 
             onAdd={this.addTrack} 
             isRemoval={false} />
           <Playlist 
