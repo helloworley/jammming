@@ -15,6 +15,7 @@ class TrackList extends React.Component {
               artist={track.artist} 
               album={track.album}
               type={this.props.type}
+              id={track.id}
               onClick={this.props.onClick}  />
           })
         }

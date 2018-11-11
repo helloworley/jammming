@@ -12,7 +12,8 @@ class Track extends React.Component {
     const songInfo = {
       title: `${this.props.title}`,
       artist: `${this.props.artist}`,
-      album: `${this.props.album}`
+      album: `${this.props.album}`,
+      id: `${this.props.id}`
     };
     this.props.onClick(songInfo);
   }

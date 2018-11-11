@@ -12,17 +12,20 @@ class App extends Component {
         {
           title: "Mountaintops In Caves",
           artist: "Talkdemonic",
-          album: "Beat Romantic"
+          album: "Beat Romantic",
+          id: "1"
         },
         {
           title: "Chihiro",
           artist: "Yoste",
-          album: "Chihiro"
+          album: "Chihiro",
+          id: "2"
         },
         {
           title: "Northern Lights",
           artist: "Lights & Motion",
-          album: "Chronicle"
+          album: "Chronicle",
+          id: "3"
         }
       ],
       newPlayList: [
@@ -41,10 +44,14 @@ class App extends Component {
     });
   }
 
-  handleAddToPlayList(songObject) {
-    this.setState({
-      newPlayList: [...this.state.newPlayList, songObject]
-    });
+  handleAddToPlayList(track) {
+    if (this.state.newPlayList.find(savedTrack => savedTrack.id === track.id)) {
+      return;
+    } else {
+      this.setState({
+        newPlayList: [...this.state.newPlayList, track]
+      });
+    }
   }
 
   handleRemoveFromPlayList(selectedTrack) {
