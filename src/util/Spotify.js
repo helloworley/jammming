@@ -1,21 +1,21 @@
-import App from "../components/App/App";
-
 // implicit grant flow returns a user's access token in the url
 
-const clientID = "932fa560fa1848d5860ecd0080fbf963";
+const clientID = "";
 const redirectURI = "http://localhost:3000/";
+const currentLocation = window.location.href;
 let accessToken;
 let expiresIn;
 
-const currentLocation = window.location.href;
-
 const Spotify = {
   redirectToLogin() {
-    const endpoint = `https://accounts.spotify.com/authorize?client_id=${clientID}&redirect_uri=${redirectURI}&response_type=token&state=123`;
+    // const scopes = 'playlist-modify-public playlist-modify-private';
+    let scopes;
+    const endpoint = `https://accounts.spotify.com/authorize?client_id=${clientID}&redirect_uri=${redirectURI}&response_type=token&state=123${(scopes ? '&scope=' + encodeURIComponent(scopes) : '')}`;
     window.location.replace(endpoint);
   },
 
   getAccessToken() {
+    console.log(accessToken)
     if (accessToken) {
       // Return the access token if it already exists
       return accessToken;
@@ -41,7 +41,6 @@ const Spotify = {
 
   search(searchTerm) {
     const endpoint = `https://api.spotify.com/v1/search?type=track&q=${searchTerm}`;
-    
     // if there's no access token, retrieve it
     if (!accessToken) {
       this.getAccessToken();
@@ -78,6 +77,74 @@ const Spotify = {
           return [];
         }
       });
+  },
+
+  getUserId() {
+    const endpoint = "https://api.spotify.com/v1/me";
+    return fetch(endpoint, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+      .then(
+        response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error("Request failed.");
+        },
+        networkError => {
+          console.log(networkError.message);
+        }
+      )
+      .then(jsonResponse => {
+        return jsonResponse.id;
+      });
+  },
+
+  createNewPlaylist(playListName, userID) {
+    console.log(playListName, userID)
+    const playListEndpoint = `https://api.spotify.com/v1/users/${userID}/playlists`;
+    return fetch(playListEndpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json; charset=utf-8",
+      },
+      body: JSON.stringify({name: playListName})
+    })
+      .then(
+        response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error("Request failed.");
+        },
+        networkError => {
+          console.log(networkError.message);
+        }
+      )
+      .then(jsonResponse => {
+        console.log(jsonResponse);
+      });
+  },
+
+  savePlaylist(playListName, trackURIs) {
+    if (!playListName && !trackURIs) {
+      return;
+    }
+    let userID;
+
+    this.getUserId()
+      .then(response => {
+        userID = response;
+        console.log(userID);
+      })
+      .then(() => {
+        this.createNewPlaylist(playListName, userID);
+      });
+
+    // POST https://api.spotify.com/v1/users/{user_id}/playlists
   }
 };
 
