@@ -2,7 +2,7 @@ import App from "../components/App/App";
 
 // implicit grant flow returns a user's access token in the url
 
-const clientID = "";
+const clientID = "932fa560fa1848d5860ecd0080fbf963";
 const redirectURI = "http://localhost:3000/";
 let accessToken;
 let expiresIn;
@@ -41,7 +41,7 @@ const Spotify = {
 
   search(searchTerm) {
     const endpoint = `https://api.spotify.com/v1/search?type=track&q=${searchTerm}`;
-
+    
     // if there's no access token, retrieve it
     if (!accessToken) {
       this.getAccessToken();
