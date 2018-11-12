@@ -31,15 +31,16 @@ class App extends Component {
     this.setState({ searchTerm: term });
   }
 
-  addTrack(track) {
-    if (this.state.newPlayList.find(savedTrack => savedTrack.id === track.id)) {
+  addTrack(trackToAdd) {
+    if (this.state.newPlayList.find(existingTrack => existingTrack.track === trackToAdd.track)) {
       return;
     } else {
-      this.setState({ newPlayList: [...this.state.newPlayList, track] });
+      this.setState({ newPlayList: [...this.state.newPlayList, trackToAdd] });
     }
   }
 
   removeTrack(selectedTrack) {
+    console.log('removing', selectedTrack);
     const updatedPlayList = this.state.newPlayList.filter(currentTrack => {
       return JSON.stringify(currentTrack) !== JSON.stringify(selectedTrack);
     });
@@ -61,12 +62,6 @@ class App extends Component {
       this.setState({ searchResults: searchResults })
     });
   }
-
-  // searchYelp(term, location, sortBy) {
-  //   Yelp.search(term, location, sortBy).then(businesses => {
-  //     this.setState({businesses: businesses});
-  //   });
-  // }
 
   render() {
     return (
