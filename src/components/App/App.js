@@ -17,7 +17,6 @@ class App extends Component {
 
     this.updatePlaylistName = this.updatePlaylistName.bind(this);
     this.addTrack = this.addTrack.bind(this);
-    this.updateSearchResults = this.updateSearchResults.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
     this.savePlaylist = this.savePlaylist.bind(this);
     this.search = this.search.bind(this);
@@ -55,13 +54,18 @@ class App extends Component {
     console.log(trackURIs);
   }
 
-  updateSearchResults(term) {
-    this.setState({ searchResults: Spotify.search(term) });
-  }
 
   search() {
-    Spotify.search(this.state.searchTerm);
+    Spotify.search(this.state.searchTerm).then( searchResults => {
+      this.setState({ searchResults: searchResults })
+    });
   }
+
+  // searchYelp(term, location, sortBy) {
+  //   Yelp.search(term, location, sortBy).then(businesses => {
+  //     this.setState({businesses: businesses});
+  //   });
+  // }
 
   render() {
     return (

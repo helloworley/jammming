@@ -1,5 +1,8 @@
+import App from "../components/App/App";
+
 // implicit grant flow returns a user's access token in the url
 
+const clientID = "";
 const redirectURI = "http://localhost:3000/";
 let accessToken;
 let expiresIn;
@@ -16,7 +19,7 @@ const Spotify = {
     if (accessToken) {
       // Return the access token if it already exists
       return accessToken;
-    } else if (window.location.href.includes('access_token')) {
+    } else if (window.location.href.includes("access_token")) {
       // else check if the access token is in the URL
       const expiresInObj = currentLocation.match(/expires_in=([^&]*)/);
       const accessTokenObj = currentLocation.match(/access_token=([^&]*)/);
@@ -38,38 +41,43 @@ const Spotify = {
 
   search(searchTerm) {
     const endpoint = `https://api.spotify.com/v1/search?type=track&q=${searchTerm}`;
+
     // if there's no access token, retrieve it
     if (!accessToken) {
       this.getAccessToken();
-    } else {
-      console.log(searchTerm);
-      // return fetch(endpoint).then(
-      //   response => {
-      //     if (response.ok) {
-      //       let jsonResponse = response.json();
-      //       if (jsonResponse) {
-      //         const trackList = jsonResponse.map(track => {
-      //           const trackArray = {
-      //             track: track.id,
-      //             name: track.name,
-      //             artist: track.artists[0].name,
-      //             album: track.album.name,
-      //             uri: track.uri
-      //           };
-      //           return trackArray;
-      //         });
-      //         return trackList;
-      //       } else {
-      //         return [];
-      //       }
-      //     }
-      //     throw new Error("Request failed!");
-      //   },
-      //   networkError => {
-      //     console.log(networkError.message);
-      //   }
-      // );
     }
+
+    return fetch(endpoint, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+      .then(
+        response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error("Request failed.");
+        },
+        networkError => {
+          console.log(networkError.message);
+        }
+      )
+      .then(jsonResponse => {
+        if (jsonResponse.tracks.items) {
+          return jsonResponse.tracks.items.map(track => {
+            return {
+              track: track.id,
+              name: track.name,
+              artist: track.artists[0].name,
+              album: track.album.name,
+              uri: track.uri
+            };
+          });
+        } else {
+          return [];
+        }
+      });
   }
 };
 
