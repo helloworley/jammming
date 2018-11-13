@@ -1,6 +1,5 @@
 // implicit grant flow returns a user's access token in the url
-
-const clientID = "";
+const clientID = "932fa560fa1848d5860ecd0080fbf963";
 const redirectURI = "http://localhost:3000/";
 const currentLocation = window.location.href;
 let accessToken;
@@ -8,14 +7,14 @@ let expiresIn;
 
 const Spotify = {
   redirectToLogin() {
-    // const scopes = 'playlist-modify-public playlist-modify-private';
     let scopes;
-    const endpoint = `https://accounts.spotify.com/authorize?client_id=${clientID}&redirect_uri=${redirectURI}&response_type=token&state=123${(scopes ? '&scope=' + encodeURIComponent(scopes) : '')}`;
+    const endpoint = `https://accounts.spotify.com/authorize?client_id=${clientID}&redirect_uri=${redirectURI}&response_type=token&state=123${
+      scopes ? "&scope=" + encodeURIComponent(scopes) : ""
+    }`;
     window.location.replace(endpoint);
   },
 
   getAccessToken() {
-    console.log(accessToken)
     if (accessToken) {
       // Return the access token if it already exists
       return accessToken;
@@ -103,15 +102,16 @@ const Spotify = {
   },
 
   createNewPlaylist(playListName, userID) {
-    console.log(playListName, userID)
     const playListEndpoint = `https://api.spotify.com/v1/users/${userID}/playlists`;
     return fetch(playListEndpoint, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json; charset=utf-8",
+        "Content-Type": "application/json; charset=utf-8"
       },
-      body: JSON.stringify({name: playListName})
+      body: JSON.stringify({
+        name: playListName
+      })
     })
       .then(
         response => {
@@ -125,8 +125,32 @@ const Spotify = {
         }
       )
       .then(jsonResponse => {
-        console.log(jsonResponse);
+        return jsonResponse.id;
       });
+  },
+
+  addSongsToNewPlaylist(userID, playListID, trackURIs) {
+    const addToNewPlaylistEndpoint = `https://api.spotify.com/v1/users/${userID}/playlists/${playListID}/tracks`;
+    return fetch(addToNewPlaylistEndpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      body: JSON.stringify({
+        uris: trackURIs
+      })
+    }).then(
+      response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error("Request failed.");
+      },
+      networkError => {
+        console.log(networkError.message);
+      }
+    );
   },
 
   savePlaylist(playListName, trackURIs) {
@@ -134,17 +158,21 @@ const Spotify = {
       return;
     }
     let userID;
+    let playListID;
 
+    // first get the user id
     this.getUserId()
       .then(response => {
         userID = response;
-        console.log(userID);
       })
       .then(() => {
-        this.createNewPlaylist(playListName, userID);
+        // then use the user id to create a new playlist
+        this.createNewPlaylist(playListName, userID).then(response => {
+          playListID = response;
+          // then add the songs in the trackURIs array to the playlist
+          this.addSongsToNewPlaylist(userID, playListID, trackURIs);
+        });
       });
-
-    // POST https://api.spotify.com/v1/users/{user_id}/playlists
   }
 };
 
