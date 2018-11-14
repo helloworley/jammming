@@ -35,33 +35,24 @@ const Spotify = {
       return accessToken;
     } else {
       // else redirect the user to the Spotify OAuth login
-      this.redirectToLogin();
+      const accessUrl = `https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectURI}`;
+      window.location = accessUrl;
     }
   },
 
   search(searchTerm) {
-    const endpoint = `https://api.spotify.com/v1/search?type=track&q=${searchTerm}`;
-    // if there's no access token, retrieve it
-    if (!accessToken) {
-      this.getAccessToken();
-    }
-    
-    return fetch(endpoint, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
-      .then(
-        response => {
-          if (response.ok) {
-            return response.json();
-          }
-          throw new Error("Request failed.");
-        },
-        networkError => {
-          console.log(networkError.message);
+    const accessToken = this.getAccessToken();
+    return fetch(
+      `https://api.spotify.com/v1/search?type=track&q=${searchTerm}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
         }
-      )
+      }
+    )
+      .then(response => {
+        return response.json();
+      })
       .then(jsonResponse => {
         if (jsonResponse.tracks.items) {
           return jsonResponse.tracks.items.map(track => {
@@ -80,31 +71,21 @@ const Spotify = {
   },
 
   getUserId() {
-    const endpoint = "https://api.spotify.com/v1/me";
-    return fetch(endpoint, {
+    return fetch(`https://api.spotify.com/v1/me`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
     })
-      .then(
-        response => {
-          if (response.ok) {
-            return response.json();
-          }
-          throw new Error("Request failed.");
-        },
-        networkError => {
-          console.log(networkError.message);
-        }
-      )
+      .then(response => {
+        return response.json();
+      })
       .then(jsonResponse => {
         return jsonResponse.id;
       });
   },
 
   createNewPlaylist(playListName, userID) {
-    const playListEndpoint = `https://api.spotify.com/v1/users/${userID}/playlists`;
-    return fetch(playListEndpoint, {
+    return fetch(`https://api.spotify.com/v1/users/${userID}/playlists`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -114,44 +95,30 @@ const Spotify = {
         name: playListName
       })
     })
-      .then(
-        response => {
-          if (response.ok) {
-            return response.json();
-          }
-          throw new Error("Request failed.");
-        },
-        networkError => {
-          console.log(networkError.message);
-        }
-      )
+      .then(response => {
+        return response.json();
+      })
       .then(jsonResponse => {
         return jsonResponse.id;
       });
   },
 
   addSongsToNewPlaylist(userID, playListID, trackURIs) {
-    const addToNewPlaylistEndpoint = `https://api.spotify.com/v1/users/${userID}/playlists/${playListID}/tracks`;
-    return fetch(addToNewPlaylistEndpoint, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json; charset=utf-8"
-      },
-      body: JSON.stringify({
-        uris: trackURIs
-      })
-    }).then(
-      response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Request failed.");
-      },
-      networkError => {
-        console.log(networkError.message);
+    return fetch(
+      `https://api.spotify.com/v1/users/${userID}/playlists/${playListID}/tracks`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        body: JSON.stringify({
+          uris: trackURIs
+        })
       }
-    );
+    ).then(response => {
+      return response.json();
+    });
   },
 
   savePlaylist(playListName, trackURIs) {
@@ -161,16 +128,13 @@ const Spotify = {
     let userID;
     let playListID;
 
-    // first get the user id
     this.getUserId()
       .then(response => {
         userID = response;
       })
       .then(() => {
-        // then use the user id to create a new playlist
         this.createNewPlaylist(playListName, userID).then(response => {
           playListID = response;
-          // then add the songs in the trackURIs array to the playlist
           this.addSongsToNewPlaylist(userID, playListID, trackURIs);
         });
       });
