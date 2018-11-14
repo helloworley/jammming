@@ -32,7 +32,11 @@ class App extends Component {
   }
 
   addTrack(trackToAdd) {
-    if (this.state.newPlayList.find(existingTrack => existingTrack.track === trackToAdd.track)) {
+    if (
+      this.state.newPlayList.find(
+        existingTrack => existingTrack.track === trackToAdd.track
+      )
+    ) {
       return;
     } else {
       this.setState({ newPlayList: [...this.state.newPlayList, trackToAdd] });
@@ -40,7 +44,7 @@ class App extends Component {
   }
 
   removeTrack(selectedTrack) {
-    console.log('removing', selectedTrack);
+    console.log("removing", selectedTrack);
     const updatedPlayList = this.state.newPlayList.filter(currentTrack => {
       return JSON.stringify(currentTrack) !== JSON.stringify(selectedTrack);
     });
@@ -49,23 +53,20 @@ class App extends Component {
   }
 
   savePlaylist() {
-    // const trackURIs = this.state.searchResults.map(searchResult => {
-    //   return searchResult.uri;
-    // });
-    console.log('calling save playlist');
-    const newPlayListURIs = this.state.newPlayList.map(track => {
-      return track.uri;
-    })
-    console.log(this.state.newPlayList);
-    console.log(newPlayListURIs);
-    Spotify.savePlaylist(this.state.playlistName, newPlayListURIs);
+    if (this.state.newPlayList.length >= 1) {
+      const newPlayListURIs = this.state.newPlayList.map(track => {
+        return track.uri;
+      });
+      Spotify.savePlaylist(this.state.playlistName, newPlayListURIs);
+      this.updatePlaylistName("New Playlist");
+      this.setState({ newPlayList: [] });
+    }
   }
 
-
   search() {
-    Spotify.search(this.state.searchTerm).then( searchResults => {
-      console.log(searchResults)
-      this.setState({ searchResults: searchResults })
+    Spotify.search(this.state.searchTerm).then(searchResults => {
+      console.log(searchResults);
+      this.setState({ searchResults: searchResults });
     });
   }
 

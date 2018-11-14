@@ -15,6 +15,7 @@ const Spotify = {
   },
 
   getAccessToken() {
+    console.log(accessToken);
     if (accessToken) {
       // Return the access token if it already exists
       return accessToken;
@@ -44,7 +45,7 @@ const Spotify = {
     if (!accessToken) {
       this.getAccessToken();
     }
-
+    
     return fetch(endpoint, {
       headers: {
         Authorization: `Bearer ${accessToken}`
